@@ -1,0 +1,33 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Create SSH key file
+        run: |
+          echo "${{ secrets.EC2_KEY }}" > /tmp/deploy_key.pem
+          chmod 600 /tmp/deploy_key.pem
+
+      - name: Copy files to EC2
+        run: |
+          # create target dir (optional)
+          ssh -o StrictHostKeyChecking=no -i /tmp/deploy_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} 'sudo mkdir -p /var/www/html && sudo chown $USER:$USER /var/www/html || true'
+
+          # copy all repo files to /var/www/html (adjust as needed)
+          scp -o StrictHostKeyChecking=no -i /tmp/deploy_key.pem -r ./* ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }}:/home/${{ secrets.EC2_USER }}/
+
+          # move files into web root and set permissions
+          ssh -o StrictHostKeyChecking=no -i /tmp/deploy_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} 'sudo mv /home/${{ secrets.EC2_USER }}/index.html /var/www/html/index.html || true; sudo chown www-data:www-data /var/www/html/index.html || true'
+
+      - name: Restart nginx (optional)
+        run: |
+          ssh -o StrictHostKeyChecking=no -i /tmp/deploy_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} 'sudo systemctl restart nginx || true'
