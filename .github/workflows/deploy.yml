@@ -31,3 +31,30 @@ jobs:
       - name: Restart nginx (optional)
         run: |
           ssh -o StrictHostKeyChecking=no -i /tmp/deploy_key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} 'sudo systemctl restart nginx || true'
+      - name: Notify Slack on success
+        if: success()
+        run: |
+          cat > /tmp/payload.json <<'JSON'
+          {
+            "text": "*Deployment succeeded* :white_check_mark:",
+            "blocks": [
+              { "type": "section", "text": { "type": "mrkdwn", "text": "*Deployment succeeded* :white_check_mark:" } },
+              { "type": "section", "text": { "type": "mrkdwn", "text": "*Repo:* <https://github.com/${{ github.repository }}|${{ github.repository }}>\n*Branch:* ${{ github.ref_name }}\n*Commit:* ${{ github.sha }}\n*Actor:* ${{ github.actor }}\n*Run:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>" } }
+            ]
+          }
+          JSON
+          curl -X POST -H 'Content-type: application/json' --data @/tmp/payload.json "${{ secrets.SLACK_WEBHOOK }}"
+
+      - name: Notify Slack on failure
+        if: failure()
+        run: |
+          cat > /tmp/payload.json <<'JSON'
+          {
+            "text": "*Deployment failed* :x:",
+            "blocks": [
+              { "type": "section", "text": { "type": "mrkdwn", "text": "*Deployment failed* :x:" } },
+              { "type": "section", "text": { "type": "mrkdwn", "text": "*Repo:* <https://github.com/${{ github.repository }}|${{ github.repository }}>\n*Branch:* ${{ github.ref_name }}\n*Commit:* ${{ github.sha }}\n*Actor:* ${{ github.actor }}\n*Run:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>\n\nCheck logs in Actions for details." } }
+            ]
+          }
+          JSON
+          curl -X POST -H 'Content-type: application/json' --data @/tmp/payload.json "${{ secrets.SLACK_WEBHOOK }}"
