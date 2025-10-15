@@ -1,9 +1,91 @@
-<!-- index.html -->
-<!doctype html>
-<html>
-  <head><meta charset="utf-8"><title>Auto Deploy</title></head>
-  <body>
-    <h1>Hello — initial commit</h1>
-    <p>Deployed from GitHub Actions.</p>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Karthik Ramesh - Personal Page</title>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --bg: #f4f4f9;
+      --text: #333;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      width: 100%;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      color: #555;
+      margin-bottom: 1.5rem;
+    }
+
+    p {
+      line-height: 1.6;
+      font-size: 1rem;
+      color: #444;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Karthik Ramesh</h1>
+    <h2>B.Tech Graduate in Computer Science</h2>
+    <p>
+      Welcome to my personal page! I'm passionate about technology, software development, 
+      and exploring the world of DevOps. I enjoy solving complex problems, learning new tools, 
+      and building efficient systems that make a real impact.
+    </p>
+    <p>
+      This page is hosted on my Apache2 server running on Ubuntu. More content coming soon!
+    </p>
+  </div>
+
+  <footer>
+    <p>© 2025 Karthik Ramesh. All Rights Reserved.</p>
+  </footer>
+</body>
 </html>
